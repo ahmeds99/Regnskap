@@ -1,10 +1,23 @@
 import express, { Request, Response } from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
 import customersRouter from './src/routes/customers';
 import projectsRouter from './src/routes/projects';
 
+dotenv.config();
+
 const app = express();
 const PORT = process.env.PORT || 3000;
+const CORS_ORIGIN = process.env.CORS_ORIGIN;
 
+if (!CORS_ORIGIN) {
+  throw new Error('CORS_ORIGIN environment variable is required');
+}
+
+app.use(cors({
+  origin: CORS_ORIGIN,
+  credentials: true
+}));
 app.use(express.json());
 
 app.get('/', (_req: Request, res: Response) => {
