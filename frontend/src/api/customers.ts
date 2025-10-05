@@ -1,4 +1,8 @@
-import type { Customer, CreateCustomerRequest } from "../types/customer";
+import type {
+  Customer,
+  CreateCustomerRequest,
+  UpdateCustomerRequest,
+} from "../types/customer";
 
 const API_BASE_URL = "http://localhost:3000/api";
 
@@ -22,6 +26,19 @@ export const customersApi = {
       body: JSON.stringify(customer),
     });
     if (!res.ok) throw new Error("Failed to create customer");
+    return res.json();
+  },
+
+  update: async (
+    id: number,
+    customer: UpdateCustomerRequest
+  ): Promise<Customer> => {
+    const res = await fetch(`${API_BASE_URL}/customers/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(customer),
+    });
+    if (!res.ok) throw new Error("Failed to update customer");
     return res.json();
   },
 };

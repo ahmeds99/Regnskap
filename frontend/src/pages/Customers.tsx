@@ -5,17 +5,30 @@ import {
   Button,
   Card,
   CardContent,
+  IconButton,
 } from "@mui/material";
 import { Link } from "@tanstack/react-router";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import AddIcon from "@mui/icons-material/Add";
+import EditIcon from "@mui/icons-material/Edit";
 import { useCustomers } from "../hooks/useCustomers";
 import { CreateCustomerDialog } from "../components/CreateCustomerDialog";
+import { EditCustomerDialog } from "../components/EditCustomerDialog";
 import { useState } from "react";
+import type { Customer } from "../types/customer";
 
 export function Customers() {
   const { data: customers, isLoading } = useCustomers();
   const [open, setOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(
+    null
+  );
+
+  const handleEdit = (customer: Customer) => {
+    setSelectedCustomer(customer);
+    setEditOpen(true);
+  };
 
   return (
     <Container maxWidth="md">
@@ -56,10 +69,26 @@ export function Customers() {
             {customers?.map((customer) => (
               <Card key={customer.id}>
                 <CardContent>
-                  <Typography variant="h6">{customer.name}</Typography>
-                  <Typography color="text.secondary">
-                    Org.nr - {customer.orgnr}
-                  </Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Box>
+                      <Typography variant="h6">{customer.name}</Typography>
+                      <Typography color="text.secondary">
+                        Org.nr - {customer.orgnr}
+                      </Typography>
+                    </Box>
+                    <IconButton
+                      onClick={() => handleEdit(customer)}
+                      color="primary"
+                    >
+                      <EditIcon />
+                    </IconButton>
+                  </Box>
                 </CardContent>
               </Card>
             ))}
@@ -67,6 +96,11 @@ export function Customers() {
         )}
 
         <CreateCustomerDialog open={open} onClose={() => setOpen(false)} />
+        <EditCustomerDialog
+          open={editOpen}
+          onClose={() => setEditOpen(false)}
+          customer={selectedCustomer}
+        />
       </Box>
     </Container>
   );

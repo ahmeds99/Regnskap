@@ -8,3 +8,7 @@ export interface CreateCustomerRequest {
   name: string;
   orgnr: number;
 }
+
+export interface UpdateCustomerRequest {
+  name: string;
+}
