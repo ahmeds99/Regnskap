@@ -49,14 +49,14 @@ export function AddProjectToCustomerDialog({
   };
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
       <DialogTitle>Legg til prosjekt</DialogTitle>
-      <DialogContent>
-        <FormControl fullWidth margin="dense">
-          <InputLabel>Prosjekt</InputLabel>
+      <DialogContent sx={{ pt: 2 }}>
+        <FormControl fullWidth sx={{ mt: 1 }}>
+          <InputLabel>Velg prosjekt</InputLabel>
           <Select
             value={selectedProjectId}
-            label="Prosjekt"
+            label="Velg prosjekt"
             onChange={(e) => setSelectedProjectId(e.target.value as number)}
           >
             {projects.map((project) => (
@@ -67,7 +67,7 @@ export function AddProjectToCustomerDialog({
           </Select>
         </FormControl>
       </DialogContent>
-      <DialogActions>
+      <DialogActions sx={{ px: 3, pb: 2 }}>
         <Button onClick={onClose}>Avbryt</Button>
         <Button
           onClick={handleSubmit}
