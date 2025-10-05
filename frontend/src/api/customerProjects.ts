@@ -34,6 +34,16 @@ export const customerProjectsApi = {
     return res.json();
   },
 
+  deleteByIds: async (customerId: number, projectId: number): Promise<void> => {
+    const res = await fetch(
+      `${API_BASE_URL}/customer-projects/customer/${customerId}/project/${projectId}`,
+      {
+        method: "DELETE",
+      }
+    );
+    if (!res.ok) throw new Error("Failed to delete customer-project association");
+  },
+
   delete: async (id: number): Promise<void> => {
     const res = await fetch(`${API_BASE_URL}/customer-projects/${id}`, {
       method: "DELETE",

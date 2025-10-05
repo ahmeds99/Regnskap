@@ -76,6 +76,24 @@ router.post('/', async (req: Request, res: Response) => {
   }
 });
 
+// DELETE customer-project association by customer_id and project_id
+router.delete('/customer/:customerId/project/:projectId', async (req: Request, res: Response) => {
+  try {
+    const { customerId, projectId } = req.params;
+    const { error } = await supabase
+      .from('customer_projects')
+      .delete()
+      .eq('customer_id', customerId)
+      .eq('project_id', projectId);
+
+    if (error) throw error;
+
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to delete customer-project association' });
+  }
+});
+
 // DELETE customer-project association
 router.delete('/:id', async (req: Request, res: Response) => {
   try {

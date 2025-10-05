@@ -8,6 +8,9 @@ import {
   Box,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import { useState } from "react";
+import { customerProjectsApi } from "../api/customerProjects";
+import { useQueryClient } from "@tanstack/react-query";
 import type { Project, ProjectStatus } from "../types/project";
 
 interface ProjectCardProps {
@@ -34,6 +37,30 @@ export function ProjectCard({
   onEdit,
   onAddCustomer,
 }: ProjectCardProps) {
+  const queryClient = useQueryClient();
+  const [deletingCustomerId, setDeletingCustomerId] = useState<number | null>(
+    null
+  );
+
+  const handleDeleteCustomer = async (
+    customerId: number,
+    customerName: string
+  ) => {
+    if (!window.confirm(`Fjern ${customerName} fra ${project.name}?`)) {
+      return;
+    }
+
+    setDeletingCustomerId(customerId);
+    try {
+      await customerProjectsApi.deleteByIds(customerId, project.id);
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
+    } catch (error) {
+      console.error("Failed to remove customer from project:", error);
+    } finally {
+      setDeletingCustomerId(null);
+    }
+  };
+
   return (
     <Card>
       <CardContent>
@@ -70,6 +97,10 @@ export function ProjectCard({
                   label={cp.customers.name}
                   size="small"
                   variant="outlined"
+                  onDelete={() =>
+                    handleDeleteCustomer(cp.customer_id, cp.customers.name)
+                  }
+                  disabled={deletingCustomerId === cp.customer_id}
                   sx={{ mb: 1 }}
                 />
               ))}

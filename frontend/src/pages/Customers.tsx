@@ -16,17 +16,21 @@ import { useCustomers } from "../hooks/useCustomers";
 import { CreateCustomerDialog } from "../components/CreateCustomerDialog";
 import { EditCustomerDialog } from "../components/EditCustomerDialog";
 import { AddProjectToCustomerDialog } from "../components/AddProjectToCustomerDialog";
+import { customerProjectsApi } from "../api/customerProjects";
+import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import type { Customer } from "../types/customer";
 
 export function Customers() {
   const { data: customers, isLoading } = useCustomers();
+  const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [addProjectOpen, setAddProjectOpen] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(
     null
   );
+  const [deletingProjectId, setDeletingProjectId] = useState<number | null>(null);
 
   const handleEdit = (customer: Customer) => {
     setSelectedCustomer(customer);
@@ -36,6 +40,22 @@ export function Customers() {
   const handleAddProject = (customer: Customer) => {
     setSelectedCustomer(customer);
     setAddProjectOpen(true);
+  };
+
+  const handleDeleteProject = async (customer: Customer, projectId: number, projectName: string) => {
+    if (!window.confirm(`Fjern ${projectName} fra ${customer.name}?`)) {
+      return;
+    }
+
+    setDeletingProjectId(projectId);
+    try {
+      await customerProjectsApi.deleteByIds(customer.id, projectId);
+      queryClient.invalidateQueries({ queryKey: ["customers"] });
+    } catch (error) {
+      console.error("Failed to remove project from customer:", error);
+    } finally {
+      setDeletingProjectId(null);
+    }
   };
 
   return (
@@ -96,6 +116,8 @@ export function Customers() {
                             label={cp.projects.name}
                             size="small"
                             variant="outlined"
+                            onDelete={() => handleDeleteProject(customer, cp.project_id, cp.projects.name)}
+                            disabled={deletingProjectId === cp.project_id}
                           />
                         ))}
                       </Box>
