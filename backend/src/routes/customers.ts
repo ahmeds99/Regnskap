@@ -8,13 +8,28 @@ router.get('/', async (_req: Request, res: Response) => {
   try {
     const { data, error } = await supabase
       .from('customers')
-      .select('*')
+      .select(`
+        *,
+        customer_projects (
+          project_id,
+          projects (
+            id,
+            name,
+            description,
+            status
+          )
+        )
+      `)
       .order('id', { ascending: true });
 
-    if (error) throw error;
+    if (error) {
+      console.error('Supabase error:', error);
+      throw error;
+    }
 
     res.json(data);
   } catch (error) {
+    console.error('Failed to fetch customers:', error);
     res.status(500).json({ error: 'Failed to fetch customers' });
   }
 });
@@ -25,7 +40,18 @@ router.get('/:id', async (req: Request, res: Response) => {
     const { id } = req.params;
     const { data, error } = await supabase
       .from('customers')
-      .select('*')
+      .select(`
+        *,
+        customer_projects (
+          project_id,
+          projects (
+            id,
+            name,
+            description,
+            status
+          )
+        )
+      `)
       .eq('id', id)
       .single();
 

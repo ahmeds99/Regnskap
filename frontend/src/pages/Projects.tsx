@@ -1,45 +1,30 @@
-import {
-  Box,
-  Container,
-  Typography,
-  Button,
-  Card,
-  CardContent,
-  Chip,
-  IconButton,
-} from "@mui/material";
+import { Box, Container, Typography, Button } from "@mui/material";
 import { Link } from "@tanstack/react-router";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import AddIcon from "@mui/icons-material/Add";
-import EditIcon from "@mui/icons-material/Edit";
 import { useProjects } from "../hooks/useProjects";
 import { CreateProjectDialog } from "../components/CreateProjectDialog";
 import { EditProjectDialog } from "../components/EditProjectDialog";
+import { AddCustomerToProjectDialog } from "../components/AddCustomerToProjectDialog";
+import { ProjectCard } from "../components/ProjectCard";
 import { useState } from "react";
-import type { ProjectStatus, Project } from "../types/project";
-
-const getStatusColor = (status: ProjectStatus) => {
-  switch (status) {
-    case "Pågående":
-      return "success";
-    case "Planlagt":
-      return "warning";
-    case "Avsluttet":
-      return "default";
-    default:
-      return "default";
-  }
-};
+import type { Project } from "../types/project";
 
 export function Projects() {
   const { data: projects, isLoading } = useProjects();
   const [open, setOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
+  const [addCustomerOpen, setAddCustomerOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   const handleEdit = (project: Project) => {
     setSelectedProject(project);
     setEditOpen(true);
+  };
+
+  const handleAddCustomer = (project: Project) => {
+    setSelectedProject(project);
+    setAddCustomerOpen(true);
   };
 
   return (
@@ -79,54 +64,27 @@ export function Projects() {
         ) : (
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             {projects?.map((project) => (
-              <Card key={project.id}>
-                <CardContent>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "flex-start",
-                      mb: 1,
-                    }}
-                  >
-                    <Box sx={{ flex: 1 }}>
-                      <Box
-                        sx={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                          mb: 1,
-                        }}
-                      >
-                        <Typography variant="h6">{project.name}</Typography>
-                        <Chip
-                          label={project.status}
-                          size="small"
-                          color={getStatusColor(project.status)}
-                        />
-                      </Box>
-                      <Typography color="text.secondary">
-                        {project.description}
-                      </Typography>
-                    </Box>
-                    <IconButton
-                      onClick={() => handleEdit(project)}
-                      color="primary"
-                      sx={{ ml: 1 }}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                  </Box>
-                </CardContent>
-              </Card>
+              <ProjectCard
+                key={project.id}
+                project={project}
+                onEdit={handleEdit}
+                onAddCustomer={handleAddCustomer}
+              />
             ))}
           </Box>
         )}
 
         <CreateProjectDialog open={open} onClose={() => setOpen(false)} />
+
         <EditProjectDialog
           open={editOpen}
           onClose={() => setEditOpen(false)}
+          project={selectedProject}
+        />
+
+        <AddCustomerToProjectDialog
+          open={addCustomerOpen}
+          onClose={() => setAddCustomerOpen(false)}
           project={selectedProject}
         />
       </Box>

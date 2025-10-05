@@ -8,7 +8,17 @@ router.get('/', async (_req: Request, res: Response) => {
   try {
     const { data, error } = await supabase
       .from('projects')
-      .select('*')
+      .select(`
+        *,
+        customer_projects (
+          customer_id,
+          customers (
+            id,
+            name,
+            orgnr
+          )
+        )
+      `)
       .order('id', { ascending: true });
 
     if (error) throw error;
@@ -25,7 +35,17 @@ router.get('/:id', async (req: Request, res: Response) => {
     const { id } = req.params;
     const { data, error } = await supabase
       .from('projects')
-      .select('*')
+      .select(`
+        *,
+        customer_projects (
+          customer_id,
+          customers (
+            id,
+            name,
+            orgnr
+          )
+        )
+      `)
       .eq('id', id)
       .single();
 

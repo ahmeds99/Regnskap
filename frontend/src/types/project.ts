@@ -5,6 +5,14 @@ export interface Project {
   name: string;
   description?: string;
   status: ProjectStatus;
+  customer_projects?: Array<{
+    customer_id: number;
+    customers: {
+      id: number;
+      name: string;
+      orgnr: number;
+    };
+  }>;
 }
 
 export interface CreateProjectRequest {
