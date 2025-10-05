@@ -6,14 +6,17 @@ import {
   Card,
   CardContent,
   Chip,
+  IconButton,
 } from "@mui/material";
 import { Link } from "@tanstack/react-router";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import AddIcon from "@mui/icons-material/Add";
+import EditIcon from "@mui/icons-material/Edit";
 import { useProjects } from "../hooks/useProjects";
 import { CreateProjectDialog } from "../components/CreateProjectDialog";
+import { EditProjectDialog } from "../components/EditProjectDialog";
 import { useState } from "react";
-import type { ProjectStatus } from "../types/project";
+import type { ProjectStatus, Project } from "../types/project";
 
 const getStatusColor = (status: ProjectStatus) => {
   switch (status) {
@@ -31,6 +34,13 @@ const getStatusColor = (status: ProjectStatus) => {
 export function Projects() {
   const { data: projects, isLoading } = useProjects();
   const [open, setOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+
+  const handleEdit = (project: Project) => {
+    setSelectedProject(project);
+    setEditOpen(true);
+  };
 
   return (
     <Container maxWidth="md">
@@ -75,20 +85,38 @@ export function Projects() {
                     sx={{
                       display: "flex",
                       justifyContent: "space-between",
-                      alignItems: "center",
+                      alignItems: "flex-start",
                       mb: 1,
                     }}
                   >
-                    <Typography variant="h6">{project.name}</Typography>
-                    <Chip
-                      label={project.status}
-                      size="small"
-                      color={getStatusColor(project.status)}
-                    />
+                    <Box sx={{ flex: 1 }}>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          mb: 1,
+                        }}
+                      >
+                        <Typography variant="h6">{project.name}</Typography>
+                        <Chip
+                          label={project.status}
+                          size="small"
+                          color={getStatusColor(project.status)}
+                        />
+                      </Box>
+                      <Typography color="text.secondary">
+                        {project.description}
+                      </Typography>
+                    </Box>
+                    <IconButton
+                      onClick={() => handleEdit(project)}
+                      color="primary"
+                      sx={{ ml: 1 }}
+                    >
+                      <EditIcon />
+                    </IconButton>
                   </Box>
-                  <Typography color="text.secondary">
-                    {project.description}
-                  </Typography>
                 </CardContent>
               </Card>
             ))}
@@ -96,6 +124,11 @@ export function Projects() {
         )}
 
         <CreateProjectDialog open={open} onClose={() => setOpen(false)} />
+        <EditProjectDialog
+          open={editOpen}
+          onClose={() => setEditOpen(false)}
+          project={selectedProject}
+        />
       </Box>
     </Container>
   );

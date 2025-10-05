@@ -1,4 +1,8 @@
-import type { Project, CreateProjectRequest } from "../types/project";
+import type {
+  Project,
+  CreateProjectRequest,
+  UpdateProjectRequest,
+} from "../types/project";
 
 const API_BASE_URL = "http://localhost:3000/api";
 
@@ -22,6 +26,19 @@ export const projectsApi = {
       body: JSON.stringify(project),
     });
     if (!res.ok) throw new Error("Failed to create project");
+    return res.json();
+  },
+
+  update: async (
+    id: number,
+    project: UpdateProjectRequest
+  ): Promise<Project> => {
+    const res = await fetch(`${API_BASE_URL}/projects/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(project),
+    });
+    if (!res.ok) throw new Error("Failed to update project");
     return res.json();
   },
 };

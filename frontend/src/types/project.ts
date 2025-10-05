@@ -12,3 +12,9 @@ export interface CreateProjectRequest {
   description?: string;
   status: ProjectStatus;
 }
+
+export interface UpdateProjectRequest {
+  name: string;
+  description?: string;
+  status: ProjectStatus;
+}
