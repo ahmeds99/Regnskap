@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import customersRouter from './src/routes/customers';
 import projectsRouter from './src/routes/projects';
 import customerProjectsRouter from './src/routes/customerProjects';
+import expensesRouter from './src/routes/expenses';
 
 dotenv.config();
 
@@ -28,6 +29,7 @@ app.get('/', (_req: Request, res: Response) => {
 app.use('/api/customers', customersRouter);
 app.use('/api/projects', projectsRouter);
 app.use('/api/customer-projects', customerProjectsRouter);
+app.use('/api/expenses', expensesRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
