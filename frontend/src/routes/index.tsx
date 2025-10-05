@@ -12,13 +12,16 @@ function Index() {
       <Box
         sx={{
           display: "flex",
+          flexDirection: { xs: "column", md: "row" },
           alignItems: "center",
+          justifyContent: "center",
           minHeight: "100vh",
-          gap: 14,
+          gap: { xs: 4, md: 14 },
         }}
       >
         <NavigationCard displayText="Kunder" to="/customers" />
         <NavigationCard displayText="Prosjekter" to="/projects" />
+        <NavigationCard displayText="Kostnader" to="/costs" />
       </Box>
     </Container>
   );

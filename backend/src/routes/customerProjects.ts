@@ -9,17 +9,18 @@ router.get('/project/:projectId', async (req: Request, res: Response) => {
     const { projectId } = req.params;
     const { data, error } = await supabase
       .from('customer_projects')
-      .select(`
+      .select(
+        `
         id,
         customer_id,
         project_id,
-        percentage,
         customers (
           id,
           name,
           orgnr
         )
-      `)
+      `
+      )
       .eq('project_id', projectId);
 
     if (error) throw error;
@@ -36,18 +37,19 @@ router.get('/customer/:customerId', async (req: Request, res: Response) => {
     const { customerId } = req.params;
     const { data, error } = await supabase
       .from('customer_projects')
-      .select(`
+      .select(
+        `
         id,
         customer_id,
         project_id,
-        percentage,
         projects (
           id,
           name,
           description,
           status
         )
-      `)
+      `
+      )
       .eq('customer_id', customerId);
 
     if (error) throw error;
@@ -98,10 +100,7 @@ router.delete('/customer/:customerId/project/:projectId', async (req: Request, r
 router.delete('/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { error } = await supabase
-      .from('customer_projects')
-      .delete()
-      .eq('id', id);
+    const { error } = await supabase.from('customer_projects').delete().eq('id', id);
 
     if (error) throw error;
 
@@ -115,10 +114,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
 router.delete('/project/:projectId', async (req: Request, res: Response) => {
   try {
     const { projectId } = req.params;
-    const { error } = await supabase
-      .from('customer_projects')
-      .delete()
-      .eq('project_id', projectId);
+    const { error } = await supabase.from('customer_projects').delete().eq('project_id', projectId);
 
     if (error) throw error;
 

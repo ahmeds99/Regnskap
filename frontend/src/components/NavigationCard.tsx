@@ -8,12 +8,11 @@ interface NavigationCardProps {
 
 export function NavigationCard({ displayText, to }: NavigationCardProps) {
   return (
-    <Link to={to} style={{ textDecoration: "none", flex: 1 }}>
+    <Link to={to} style={{ textDecoration: "none", width: "100%" }}>
       <Paper
         elevation={3}
         sx={{
           p: 4,
-          width: "100%",
           textAlign: "center",
           cursor: "pointer",
           "&:hover": {
