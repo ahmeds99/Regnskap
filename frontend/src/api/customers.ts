@@ -1,4 +1,4 @@
-import type { Customer } from "../types/customer";
+import type { Customer, CreateCustomerRequest } from "../types/customer";
 
 const API_BASE_URL = "http://localhost:3000/api";
 
@@ -15,7 +15,7 @@ export const customersApi = {
     return res.json();
   },
 
-  create: async (customer: Omit<Customer, "id">): Promise<Customer> => {
+  create: async (customer: CreateCustomerRequest): Promise<Customer> => {
     const res = await fetch(`${API_BASE_URL}/customers`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

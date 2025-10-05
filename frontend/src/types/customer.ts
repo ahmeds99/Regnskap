@@ -3,3 +3,8 @@ export interface Customer {
   orgnr: number;
   name: string;
 }
+
+export interface CreateCustomerRequest {
+  name: string;
+  orgnr: number;
+}
